@@ -102,7 +102,6 @@ USER root
 
 ENV CASC_JENKINS_CONFIG=/var/jenkins_config/jenkins.yaml
 COPY jenkins.yaml /var/jenkins_config/jenkins.yaml
-COPY edit_jenkins.yaml /var/jenkins_config/edit_jenkins.yaml
 COPY init-scripts /usr/share/jenkins/ref/init.groovy.d
 COPY disable-script-security.groovy /usr/share/jenkins/ref/init.groovy.d/disable-script-security.groovy
 COPY jenkins-support /usr/local/bin/jenkins-support
