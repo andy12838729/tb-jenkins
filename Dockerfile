@@ -72,18 +72,18 @@ RUN sudo apt-get -o Acquire::ForceIPv4=true update \
 
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.280}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.289.3}
 
 # jenkins.war checksum, download will be validated using it
-ARG JENKINS_SHA=01a2934387297af601b29657e4befa7c0964334dc772af8b3b47e19e3705d45c
+#ARG JENKINS_SHA=01a2934387297af601b29657e4befa7c0964334dc772af8b3b47e19e3705d45c
 
 # Can be used to customize where jenkins.war get downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
 
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
-RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
-  && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
+RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war
+#\  && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
 
 ENV JENKINS_UC https://updates.jenkins.io
 ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
@@ -102,6 +102,7 @@ USER root
 
 ENV CASC_JENKINS_CONFIG=/var/jenkins_config/jenkins.yaml
 COPY jenkins.yaml /var/jenkins_config/jenkins.yaml
+COPY edit_jenkins.yaml /var/jenkins_config/edit_jenkins.yaml
 COPY init-scripts /usr/share/jenkins/ref/init.groovy.d
 COPY disable-script-security.groovy /usr/share/jenkins/ref/init.groovy.d/disable-script-security.groovy
 COPY jenkins-support /usr/local/bin/jenkins-support
