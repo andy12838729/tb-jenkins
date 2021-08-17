@@ -22,7 +22,7 @@ jenkins:
               value: "europe-west1"
           - envVar:
               key: "TF_VAR_parent"
-              value: "$_FOLDER_TARGET"
+              value: "${_FOLDER_TARGET}"
           - envVar:
               key: "GOOGLE_APPLICATION_CREDENTIALS"
               value: "/var/secrets/google/ec-service-account-config.json"
