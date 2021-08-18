@@ -129,11 +129,10 @@ credentials:
           id: "google"
           fileName: "ec-service-account-config.json"
           secretBytes: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
-      - file:
+      - string:
           scope: GLOBAL
-          id: "kubernetes_jenkins_token"
-          fileName: "kubernetes_jenkins_token.json"
-          secretBytes: ${base64:${readFile:${kubernetes_jenkins_token}}}
+          id: "cicd-service-account-token"
+          secret: ${cicd-service-account-token}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
