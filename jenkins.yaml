@@ -129,10 +129,10 @@ credentials:
           id: "google"
           fileName: "ec-service-account-config.json"
           secretBytes: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
-      - string:
-          scope: GLOBAL
-          id: "cicd-service-account-token"
-          secret: ${cicd-service-account-token}
+#      - string:
+#          scope: GLOBAL
+#          id: "cicd-service-account-token"
+#          secret: ${cicd-service-account-token}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
