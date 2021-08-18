@@ -87,6 +87,10 @@ jenkins:
             mountPath: "/var/secrets/google"
             optional: false
             secretName: "ec-service-account"
+        - secretVolume:
+            mountPath: "/var/secrets/kube"
+            optional: false
+            secretName: "cicd-service-account-token"
         yamlMergeStrategy: "override"
   numExecutors: 2
   mode: EXCLUSIVE
@@ -129,10 +133,11 @@ credentials:
           id: "google"
           fileName: "ec-service-account-config.json"
           secretBytes: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
-      - string:
+      - file:
           scope: GLOBAL
-          id: "cicd-service-account-token"
-          secret: ${cicd-service-account-token}
+          id: "kube"
+          fileName: "cicd-service-account-token.txt"
+          secretBytes: ${base64:${readFile:${cicd-service-account-token}}}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
