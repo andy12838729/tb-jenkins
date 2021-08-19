@@ -25,7 +25,7 @@ jenkins:
               value: "${_FOLDER_TARGET}"
           - envVar:
               key: "GOOGLE_APPLICATION_CREDENTIALS"
-              value: "/var/secrets/google/ec-service-account-config.json"
+              value: "jenkins_repo/var/secrets/google/ec-service-account-config.json"
           - envVar:
               key: "TERRAFORM_VERSION"
               value: "0.14.6"
@@ -139,12 +139,12 @@ credentials:
       - file:
           scope: GLOBAL
           id: "google"
-          fileName: "ec-service-account-config.json"
-          secretBytes: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
+          fileName: "cicd-service-account-token.txt"
+          secretBytes: ${base64:${readFile:${cicd-service-account-token}}}
       - string:
           scope: GLOBAL
-          id: "kube"
-          secret: ${cicd-service-account-token}
+          id: ${readFile:${cicd-service-account-token}}}
+          secret: ${readFile:${cicd-service-account-token}}}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
