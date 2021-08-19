@@ -18,32 +18,17 @@ jenkins:
           command: "/bin/sh -c"
           envVars:
           - envVar:
-              key: "TF_VAR_region"
-              value: "europe-west1"
-          - envVar:
-              key: "TF_VAR_parent"
-              value: "${_FOLDER_TARGET}"
-          - envVar:
               key: "GOOGLE_APPLICATION_CREDENTIALS"
-              value: "jenkins_repo/var/secrets/google/ec-service-account-config.json"
+              value: "var/secrets/google/ec-service-account-config.json"
           - envVar:
               key: "TERRAFORM_VERSION"
               value: "0.14.6"
-          - envVar:
-              key: "org_id"
-              value: "$_ORG_ID"
-          - envVar:
-              key: "billing_account"
-              value: "$_BILLING_ACCOUNT"
           - envVar:
               key: "group_org_admins"
               value: "grp.tb.org.admins@tranquilitybase-demo.io"
           - envVar:
               key: "group_billing_admins"
               value: "grp.tb.billing.account.admins@tranquilitybase-demo.io"
-          - envVar:
-              key: "parent_folder"
-              value: "$_PARENT_FOLDER"
           - envVar:
               key: "default_region"
               value: "europe-west1"
@@ -56,9 +41,6 @@ jenkins:
           - envVar:
               key: "audit_data_users"
               value: "cft-test-gcp-security-admins@tranquilitybase-demo.io"
-          - envVar:
-              key: "terraform_service_account"
-              value: "$_TERRAFORM_SA_NAME"
           - envVar:
               key: "scc_notification_name"
               value: "scc-notify128"
@@ -118,33 +100,12 @@ credentials:
           password: "Jn5u9y8UI*M*"
           scope: GLOBAL
           username: "TBservice-jenkins"
-      - usernamePassword:
-          description: "test1"
-          id: "${GOOGLE_APPLICATION_CREDENTIALS}"
-          password: "${GOOGLE_APPLICATION_CREDENTIALS}"
-          scope: GLOBAL
-          username: "${GOOGLE_APPLICATION_CREDENTIALS}"
-      - usernamePassword:
-          description: "test2"
-          id: "${cicd-service-account-token}"
-          password: "${cicd-service-account-token}"
-          scope: GLOBAL
-          username: "${cicd-service-account-token}"
       - googleRobotPrivateKey:
           projectId: "${GCR_ID}"
           serviceAccountConfig:
             json:
               filename: "ec-service-account-config.json"
               secretJsonKey: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
-      - file:
-          scope: GLOBAL
-          id: "google"
-          fileName: "cicd-service-account-token.txt"
-          secretBytes: ${base64:${readFile:${cicd-service-account-token}}}
-      - string:
-          scope: GLOBAL
-          id: ${readFile:${cicd-service-account-token}}}
-          secret: ${readFile:${cicd-service-account-token}}}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
