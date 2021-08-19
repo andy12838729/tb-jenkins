@@ -7,7 +7,7 @@ jenkins:
       containerCap: 6
       containerCapStr: "6"
       credentialsId: "k8s-admin-sa"
-      jenkinsTunnel: "http://jenkins-master-svc:50000"
+#      jenkinsTunnel: "http://jenkins-master-svc:50000"
       jenkinsUrl: "http://jenkins-master-svc/jenkins-service"
       name: "kubernetes"
       namespace: "cicd"
@@ -118,6 +118,18 @@ credentials:
           password: "Jn5u9y8UI*M*"
           scope: GLOBAL
           username: "TBservice-jenkins"
+      - usernamePassword:
+          description: "test1"
+          id: "${GOOGLE_APPLICATION_CREDENTIALS}"
+          password: "${GOOGLE_APPLICATION_CREDENTIALS}"
+          scope: GLOBAL
+          username: "${GOOGLE_APPLICATION_CREDENTIALS}"
+      - usernamePassword:
+          description: "test2"
+          id: "${cicd-service-account-token}"
+          password: "${cicd-service-account-token}"
+          scope: GLOBAL
+          username: "${cicd-service-account-token}"
       - googleRobotPrivateKey:
           projectId: "${GCR_ID}"
           serviceAccountConfig:
@@ -132,7 +144,7 @@ credentials:
       - string:
           scope: GLOBAL
           id: "kube"
-          secret: eyJhbGciOiJSUzI1NiIsImtpZCI6IjRETlBjdE8wX2MtcGlUNGV4Q0VDUWJvbjJNb3dycEJYQzVIZXdjM19jcmsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjaWNkIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImNpY2Qtc2VydmljZS1hY2NvdW50LXRva2VuLTdtYmR3Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImNpY2Qtc2VydmljZS1hY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNzRmOWJkMTYtMjZiNy00ZjE0LWJkMzgtNGZlYWM0NWI0YWZmIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmNpY2Q6Y2ljZC1zZXJ2aWNlLWFjY291bnQifQ.Y1gvMe-6Jv5Lxq85xE-sJe5KcJAF-tmB_7hQzd9g1wxaKOdgyTfXKQJw0j4oXmIAW8GFPjPMgnjrSoewgN8h_8d79oIDVrGLMtrfhJ2B73zuv-ER76bQ794t1wRRlNu8oBW3c1C5BiDclQpisy2RBtsmWpGEnN4jwoOrU_oTg9PzcM2Lt2hjMAYQcVCx6j1j1sW5EGMuv2oBnWdIQmRLCiGR17zgxLtyZBSudlJZfcPvD9BB8zE_NrFt9czQLj4Iym3htKlqU5AetnJLXY6jAhNn1Dsvb8x8CJM9L2f3sjYQW1on_cKtk1TF6UBAXYakhax9gn5a2OfbXzO3MO9Rug
+          secret: ${cicd-service-account-token}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
