@@ -6,42 +6,70 @@ jenkins:
       connectTimeout: 15
       containerCap: 6
       containerCapStr: "6"
-      credentialsId: "${GCR_ID}"
-      jenkinsTunnel: "${JENKINS_MASTER_SVC_SERVICE_HOST}:50000"
-      jenkinsUrl: "http://${JENKINS_MASTER_SVC_SERVICE_HOST}/jenkins-service"
+      credentialsId: "k8s-admin-sa"
+#      jenkinsTunnel: "http://jenkins-master-svc:50000"
+      jenkinsUrl: "http://jenkins-master-svc/jenkins-service"
       name: "kubernetes"
       namespace: "cicd"
       serverUrl: "https://172.16.0.2"
       templates:
       - containers:
-        - alwaysPullImage: true
+        - args: "cat"
+          command: "/bin/sh -c"
           envVars:
-          - secretEnvVar:
-              key: "GCR_ID"
-              optional: false
-              secretKey: "folder"
-              secretName: "gcr-folder"
-          image: "gcr.io/tranquility-base-images/tb-jenkins-slave"
+          - envVar:
+              key: "GOOGLE_APPLICATION_CREDENTIALS"
+              value: "var/secrets/google/ec-service-account-config.json"
+          - envVar:
+              key: "TERRAFORM_VERSION"
+              value: "0.14.6"
+          - envVar:
+              key: "group_org_admins"
+              value: "grp.tb.org.admins@tranquilitybase-demo.io"
+          - envVar:
+              key: "group_billing_admins"
+              value: "grp.tb.billing.account.admins@tranquilitybase-demo.io"
+          - envVar:
+              key: "default_region"
+              value: "europe-west1"
+          - envVar:
+              key: "domains_to_allow"
+              value: "tranquilitybase-demo.io"
+          - envVar:
+              key: "billing_data_users"
+              value: "cft-test-gcp-billing-admins@tranquilitybase-demo.io"
+          - envVar:
+              key: "audit_data_users"
+              value: "cft-test-gcp-security-admins@tranquilitybase-demo.io"
+          - envVar:
+              key: "scc_notification_name"
+              value: "scc-notify128"
+          - envVar:
+              key: "create_access_context_manager_access_policy"
+              value: "false"
+#          ==============
+          image: "google/cloud-sdk:latest"
           livenessProbe:
             failureThreshold: 0
             initialDelaySeconds: 0
             periodSeconds: 0
             successThreshold: 0
             timeoutSeconds: 0
-          name: "jnlp"
+          name: "gcloud"
           ttyEnabled: true
           workingDir: "/home/jenkins/agent"
-        id: "c2d70d57-7d3f-41f7-b2f6-47d093d6ea46"
-        label: "gke-slave"
-        name: "gke-slave"
+        id: "c89ecca3-b78b-4dc9-8c28-55ee9396126c"
+        label: "kubepod"
+        name: "jenkins-agent"
         namespace: "cicd"
         nodeUsageMode: "NORMAL"
         runAsUser: "0"
         volumes:
-        - hostPathVolume:
-            hostPath: "/var/run/docker.sock"
-            mountPath: "/var/run/docker.sock"
-        yamlMergeStrategy: "override"  
+        - secretVolume:
+            mountPath: "/var/secrets/google"
+            optional: false
+            secretName: "ec-service-account"
+        yamlMergeStrategy: "override"
   numExecutors: 2
   mode: EXCLUSIVE
   disableRememberMe: false
@@ -49,8 +77,8 @@ jenkins:
     standard:
       excludeClientIPFromCrumb: true
   labelAtoms:
-  - name: "gke-slave"
-  - name: "master"  
+  - name: "kubepod"
+  - name: "master"
   markupFormatter: "plainText"
   scmCheckoutRetryCount: 3
   securityRealm:
@@ -78,11 +106,6 @@ credentials:
             json:
               filename: "ec-service-account-config.json"
               secretJsonKey: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
-      - file:
-          scope: GLOBAL
-          id: "google"
-          fileName: "ec-service-account-config.json"
-          secretBytes: ${base64:${readFile:${GOOGLE_APPLICATION_CREDENTIALS}}}
 unclassified:
   gitSCM:
     createAccountBasedOnEmail: true
@@ -103,30 +126,30 @@ tool:
     installations:
     - home: "git"
       name: "Default"
-jobs:
-- script: >
-    job('Seed All') {
-      parameters {
-        stringParam('REPO', 'https://github.com/tranquilitybase-io/tb-jenkins-jobs.git', 'The branch where Jenkins is stored')
-        stringParam('BRANCH', 'main', 'The branch (used for testing)')
-      }
-      triggers {
-        cron("H/15 * * * *")
-      }
-      scm {
-        git {
-          remote {
-            url '$REPO'
-            branch '$BRANCH'
-          }
-        }
-      }
-      steps {
-        dsl {
-          external('*.groovy')  
-       // default behavior
-       // removeAction('IGNORE')      
-          removeAction('DELETE')
-        }
-      }
-    }
+#jobs:
+#- script: >
+#    job('Seed All') {
+#      parameters {
+#        stringParam('REPO', 'https://github.com/tranquilitybase-io/tb-jenkins-jobs.git', 'The branch where Jenkins is stored')
+#        stringParam('BRANCH', 'main', 'The branch (used for testing)')
+#      }
+#      triggers {
+#        cron("H/15 * * * *")
+#      }
+#      scm {
+#        git {
+#          remote {
+#            url '$REPO'
+#            branch '$BRANCH'
+#          }
+#        }
+#      }
+#      steps {
+#        dsl {
+#          external('*.groovy')
+#       // default behavior
+#       // removeAction('IGNORE')
+#          removeAction('DELETE')
+#        }
+#      }
+#    }
